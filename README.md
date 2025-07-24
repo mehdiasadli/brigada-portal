@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Government Portal
 
-## Getting Started
+A secure government documentation portal built with Next.js, Auth.js, and Prisma.
 
-First, run the development server:
+## Setup Instructions
+
+### 1. Install Dependencies
+
+```bash
+npm install --legacy-peer-deps
+```
+
+### 2. Database Setup
+
+This project uses PostgreSQL with Prisma. You need to set up a PostgreSQL database first.
+
+#### Option A: Local PostgreSQL Installation
+
+1. Install PostgreSQL on your machine
+2. Create a database named `brigada_info`
+3. Note your database credentials
+
+#### Option B: Docker PostgreSQL (Recommended for Development)
+
+```bash
+# Run PostgreSQL in Docker
+docker run --name postgres-brigada \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=brigada_info \
+  -p 5432:5432 \
+  -d postgres:15
+```
+
+### 3. Environment Configuration
+
+1. Copy the environment template:
+
+```bash
+cp .env.local.example .env.local
+```
+
+2. Update `.env.local` with your database credentials:
+
+```bash
+# Example for local PostgreSQL
+DATABASE_URL="postgresql://postgres:your_password@localhost:5432/brigada_info"
+
+# Example for Docker setup above
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/brigada_info"
+
+# Generate a secret key
+NEXTAUTH_SECRET="your-generated-secret-here"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+3. Generate a secure secret:
+
+```bash
+openssl rand -base64 32
+```
+
+### 4. Database Migration
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Run database migrations
+npx prisma migrate dev --name init
+
+# (Optional) Seed the database
+npx prisma db seed
+```
+
+### 5. Run the Application
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Authentication**: Secure login/registration with Auth.js
+- **Authorization**: Role-based access control
+- **Database**: PostgreSQL with Prisma ORM
+- **UI**: Government-styled interface with Tailwind CSS
+- **Content**: MDX support for documents and articles
 
-## Learn More
+## Development
 
-To learn more about Next.js, take a look at the following resources:
+- **Registration**: Available in development mode only
+- **Default Role**: New users get USER role
+- **Protected Routes**: All pages except login/register require authentication
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Troubleshooting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Database Connection Issues
 
-## Deploy on Vercel
+If you see database connection errors:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Ensure PostgreSQL is running
+2. Verify your DATABASE_URL in `.env.local`
+3. Check database credentials and permissions
+4. Run `npx prisma db push` to sync schema
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Environment Variables
+
+Make sure your `.env.local` file exists and contains:
+
+- `DATABASE_URL`
+- `NEXTAUTH_SECRET`
+- `NEXTAUTH_URL`

@@ -1,0 +1,279 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  USER
+
+  EDITOR
+  JOURNALIST
+  OFFICIAL
+
+  MODERATOR
+  ADMIN
+}
+
+enum MemberStatus {
+  ACTIVE
+  BANNED
+  INACTIVE
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum DocumentCategory {
+  CONSTITUTION // Constitution: The fundamental law of the country
+  LAW // Law: A law is a rule of conduct or a principle that is accepted as correct by the majority of a community
+  CODE // Code: A code is a set of rules or principles that are accepted as correct by the majority of a community
+  DECREE // Decree: A decree is a formal order or instruction issued by a government or authority
+  RESOLUTION // Resolution: A resolution is a formal decision or agreement reached by a group of people
+  REGULATION // Regulation: A regulation is a rule or principle that is accepted as correct by the majority of a community
+  OTHER // Other: Other category of document
+}
+
+enum DocumentClassification {
+  PUBLIC // every users can view and download the document
+  INTERNAL // only users with ADMIN and MODERATOR role can view and download the document
+  RESTRICTED // only users with ADMIN role can view and download the document
+}
+
+model User {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  // auth
+  email     String     @unique
+  password  String
+  roles     UserRole[] @default([])
+  // personal info
+  name      String
+
+  // relationships
+  member        Member?        @relation("UserMember")
+  documents     Document[]
+  articles      Article[]
+  news          News[]
+  contentAudits ContentAudit[]
+  mediaFiles    MediaFile[]
+
+  @@map("users")
+}
+
+model Member {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // personal information
+  name         String
+  avatarUrl    String?
+  dateOfBirth  DateTime
+  placeOfBirth String
+  bio          String?      @db.Text
+  status       MemberStatus @default(ACTIVE)
+
+  // contact information
+  email         String   @unique
+  mobileNumbers String[] // Array of mobile numbers
+
+  // social links
+  instagram String?
+  github    String?
+  facebook  String?
+  x         String? // Twitter/X
+  linkedin  String?
+
+  // professional information
+  title        String? // Job title
+  organization String? // Organization they work for
+
+  // relationships
+  userId String? @unique
+  user   User?   @relation("UserMember", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("members")
+}
+
+model Document {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // metadata
+  title       String
+  description String?       @db.Text
+  slug        String        @unique
+  status      ContentStatus @default(DRAFT)
+  active      Boolean       @default(true)
+
+  // content
+  content String @db.Text // Raw MDX content
+
+  // categorization
+  category DocumentCategory @default(OTHER)
+  tags     String[] // Array of tags
+
+  // document specific
+  version        String? // e.g., "2.1", "1.0"
+  effectiveDate  DateTime? // The date when the document is effective
+  classification DocumentClassification @default(PUBLIC)
+
+  // publishing
+  publishedAt DateTime?
+
+  // relationships
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
+
+model Article {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // metadata
+  title       String
+  description String?       @db.Text
+  excerpt     String?       @db.Text // Short summary for previews
+  slug        String        @unique
+  status      ContentStatus @default(DRAFT)
+
+  // content
+  content String @db.Text // Raw MDX content
+
+  // categorization
+  category String? // e.g., "Technology", "User Experience"
+  tags     String[] // Array of tags
+
+  // article specific
+  readTime Int? // Estimated read time in minutes
+  featured Boolean @default(false)
+
+  // publishing
+  publishedAt DateTime?
+
+  // relationships
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("articles")
+}
+
+model News {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // metadata
+  title       String
+  description String?       @db.Text
+  excerpt     String?       @db.Text // Short summary for previews
+  slug        String        @unique
+  status      ContentStatus @default(DRAFT)
+
+  // content
+  content String @db.Text // Raw MDX content
+
+  // categorization
+  category String? // e.g., "Policy", "Budget", "Technology"
+  tags     String[] // Array of tags
+
+  // news specific
+  isBreaking Boolean @default(false)
+  priority   Int     @default(0) // Higher number = higher priority
+  readTime   Int? // Estimated read time in minutes
+
+  // publishing
+  publishedAt DateTime?
+
+  // relationships
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("news")
+}
+
+// Additional models for better content management
+
+model Category {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String  @unique
+  description String? @db.Text
+  color       String? // Hex color for UI
+  contentType String // "document", "article", "news"
+
+  @@map("categories")
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String  @unique
+  description String? @db.Text
+  color       String? // Hex color for UI
+
+  @@map("tags")
+}
+
+// Audit log for content changes
+model ContentAudit {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  contentType String // "document", "article", "news"
+  contentId   String // ID of the content item
+  action      String // "created", "updated", "deleted", "published"
+  changes     Json? // JSON object of what changed
+
+  // user who made the change
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("content_audits")
+}
+
+// For storing file uploads (images, PDFs, etc.)
+model MediaFile {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  fileName     String
+  originalName String
+  mimeType     String
+  fileSize     Int // in bytes
+  url          String // Storage URL (S3, local, etc.)
+
+  // metadata
+  alt     String? // Alt text for images
+  caption String? // Caption for images
+
+  // relationships
+  uploadedById String
+  uploadedBy   User   @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  @@map("media_files")
+}
