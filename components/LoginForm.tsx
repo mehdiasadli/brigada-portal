@@ -154,24 +154,23 @@ export default function LoginForm() {
           </form>
 
           {/* Registration Link */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className='mt-6'>
-              <div className='relative'>
-                <div className='absolute inset-0 flex items-center'>
-                  <div className='w-full border-t border-gray-300' />
-                </div>
-                <div className='relative flex justify-center text-sm'>
-                  <span className='px-2 bg-white text-gray-500 font-serif'>Hesabınız yoxdur?</span>
-                </div>
+          <div className='mt-6'>
+            <div className='relative'>
+              <div className='absolute inset-0 flex items-center'>
+                <div className='w-full border-t border-gray-300' />
               </div>
-
-              <div className='mt-6 text-center'>
-                <Link href='/register' className='text-blue-600 hover:text-blue-500 font-medium font-serif'>
-                  Yeni hesab yarat
-                </Link>
+              <div className='relative flex justify-center text-sm'>
+                <span className='px-2 bg-white text-gray-500 font-serif'>Hesabınız yoxdur?</span>
               </div>
             </div>
-          )}
+
+            <div className='mt-6 text-center'>
+              <Link href='/register' className='text-blue-600 hover:text-blue-500 font-medium font-serif'>
+                Yeni hesab yarat
+              </Link>
+            </div>
+          </div>
+
           {/* Help Information */}
           <div className='mt-6'>
             <div className='relative'>
