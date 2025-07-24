@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ConditionalNavbar } from '@/components/ConditionalNavbar';
-import { ViewTransitions } from 'next-view-transitions';
 import { SessionProvider } from 'next-auth/react';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -27,16 +26,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ViewTransitions>
-      <html lang='en'>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <SessionProvider>
-            <ConditionalNavbar />
-            {children}
-            <Analytics />
-          </SessionProvider>
-        </body>
-      </html>
-    </ViewTransitions>
+    <html lang='en'>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SessionProvider>
+          <ConditionalNavbar />
+          {children}
+          <Analytics />
+        </SessionProvider>
+      </body>
+    </html>
   );
 }
