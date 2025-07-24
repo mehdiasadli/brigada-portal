@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { MemberStatus, UserRole } from '@prisma/client';
 import MemberActions from '@/components/MemberActions';
 import { getMemberStatusDisplayName } from '@/lib/utils';
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{
@@ -16,6 +17,86 @@ interface PageProps {
 const generateSlug = (name: string): string => {
   return name.toLowerCase().replace(/\s+/g, '-');
 };
+
+// Generate dynamic metadata for member pages
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+
+  // Find all members to match by slug
+  const members = await prisma.member.findMany({
+    include: {
+      user: {
+        select: {
+          name: true,
+          roles: true,
+        },
+      },
+    },
+  });
+
+  // Find the member whose name generates the same slug as the URL parameter
+  const member = members.find((m) => generateSlug(m.name) === decodeURIComponent(resolvedParams.memberName));
+
+  if (!member) {
+    return {
+      title: 'Üzv tapılmadı',
+      description: 'Axtardığınız üzv mövcud deyil.',
+    };
+  }
+
+  const statusDisplay = getMemberStatusDisplayName(member.status);
+  const description = member.bio
+    ? `${member.bio.substring(0, 150)}...`
+    : `${member.name} - Brigada İcmasının üzvü. ${member.title ? member.title + '. ' : ''}${member.organization ? member.organization + '-də çalışır. ' : ''}${statusDisplay} statusunda.`;
+
+  return {
+    title: `${member.name} - Üzv Profili`,
+    description,
+    keywords: [
+      member.name,
+      'Brigada üzvü',
+      'icma üzvü',
+      'üzv profili',
+      member.title || '',
+      member.organization || '',
+      'əlaqə məlumatları',
+    ].filter(Boolean),
+    authors: [{ name: 'Brigada Portal' }],
+    creator: 'Brigada Portal',
+    publisher: 'Brigada İcması',
+
+    openGraph: {
+      title: `${member.name} - Brigada Portal`,
+      description,
+      url: `/members/${encodeURIComponent(generateSlug(member.name))}`,
+      type: 'profile',
+      images: [
+        {
+          url: member.avatarUrl || '/og.png',
+          width: member.avatarUrl ? 400 : 1200,
+          height: member.avatarUrl ? 400 : 630,
+          alt: `${member.name} profil şəkli`,
+        },
+      ],
+    },
+
+    twitter: {
+      title: `${member.name} - Brigada Portal`,
+      description,
+      creator: '@brigada_portal',
+    },
+
+    alternates: {
+      canonical: `/members/${encodeURIComponent(generateSlug(member.name))}`,
+    },
+
+    other: {
+      'profile:first_name': member.name.split(' ')[0],
+      'profile:last_name': member.name.split(' ').slice(1).join(' '),
+      'profile:username': generateSlug(member.name),
+    },
+  };
+}
 
 const formatDate = (date: Date) => {
   return date.toLocaleDateString('en-US', {

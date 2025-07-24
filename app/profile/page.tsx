@@ -2,6 +2,44 @@ import Link from 'next/link';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Profil',
+  description: 'İstifadəçi profili və hesab məlumatları. Profil məlumatlarını redaktə edin və parol dəyişin.',
+  keywords: [
+    'istifadəçi profili',
+    'hesab məlumatları',
+    'profil redaktəsi',
+    'parol dəyişmək',
+    'şəxsi məlumatlar',
+    'user profile',
+  ],
+  openGraph: {
+    title: 'Profil - Brigada Portal',
+    description: 'İstifadəçi profili və hesab məlumatları.',
+    url: '/profile',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Brigada Portal Profil',
+      },
+    ],
+  },
+  twitter: {
+    title: 'Profil - Brigada Portal',
+    description: 'İstifadəçi profili və hesab məlumatları.',
+  },
+  robots: {
+    index: false, // Don't index profile page
+    follow: false,
+  },
+  alternates: {
+    canonical: '/profile',
+  },
+};
 
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString('en-US', {

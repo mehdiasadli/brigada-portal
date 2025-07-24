@@ -1,0 +1,61 @@
+{
+  "name": "Brigada Portal - Rəsmi İcma Portalı",
+  "short_name": "Brigada Portal",
+  "description": "Azərbaycan Respublikası Brigada İcmasının rəsmi portalı. Sənədlər, üzvlər və icma məlumatları.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1e40af",
+  "background_color": "#ffffff",
+  "lang": "az",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["government", "productivity", "education"],
+  "shortcuts": [
+    {
+      "name": "Sənədlər",
+      "short_name": "Sənədlər",
+      "description": "Rəsmi sənədlər və qanunlar",
+      "url": "/docs",
+      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+    },
+    {
+      "name": "Üzvlər",
+      "short_name": "Üzvlər",
+      "description": "İcma üzvlərinin siyahısı",
+      "url": "/members",
+      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+    },
+    {
+      "name": "Profil",
+      "short_name": "Profil",
+      "description": "İstifadəçi profili",
+      "url": "/profile",
+      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+    }
+  ]
+}

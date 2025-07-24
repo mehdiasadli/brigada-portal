@@ -3,6 +3,47 @@ import { UserRole, ContentStatus, DocumentCategory } from '@prisma/client';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { getDocumentCategoryDescription, getDocumentCategoryDisplayName } from '@/lib/utils';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Sənədlər',
+  description:
+    'Brigada İcmasının bütün rəsmi sənədləri. Qanunlar, məcəllələr, fərmanlar, qərarlar və digər hüquqi sənədlər. Sənədləri yükləyin və paylaşın.',
+  keywords: [
+    'rəsmi sənədlər',
+    'qanunlar',
+    'məcəllələr',
+    'fərmanlar',
+    'qərarlar',
+    'hüquqi sənədlər',
+    'sənəd yükləmə',
+    'Brigada sənədləri',
+    'konstitusiya',
+    'kod',
+    'tənzimləmə',
+    'hökumət sənədləri',
+  ],
+  openGraph: {
+    title: 'Sənədlər - Brigada Portal',
+    description: 'Brigada İcmasının rəsmi sənədləri və hüquqi aktları. Qanunlar, məcəllələr və digər sənədlər.',
+    url: '/docs',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Brigada Portal Sənədlər',
+      },
+    ],
+  },
+  twitter: {
+    title: 'Sənədlər - Brigada Portal',
+    description: 'Brigada İcmasının rəsmi sənədləri və hüquqi aktları.',
+  },
+  alternates: {
+    canonical: '/docs',
+  },
+};
 // import SearchForm from '@/components/SearchForm';
 
 // Define interface based on actual Prisma query result

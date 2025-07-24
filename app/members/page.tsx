@@ -3,6 +3,44 @@ import { UserRole, MemberStatus } from '@prisma/client';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { getMemberStatusDisplayName } from '@/lib/utils';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Üzvlər',
+  description:
+    'Brigada İcmasının üzvlərinin siyahısı və profil məlumatları. İcma üzvləri ilə əlaqə saxlayın və onların fəaliyyətləri barədə məlumat əldə edin.',
+  keywords: [
+    'Brigada üzvləri',
+    'icma üzvləri',
+    'üzv profili',
+    'əlaqə məlumatları',
+    'icma liderlər',
+    'komanda üzvləri',
+    'sosial şəbəkələr',
+    'bio məlumatları',
+    'icma şəbəkəsi',
+  ],
+  openGraph: {
+    title: 'Üzvlər - Brigada Portal',
+    description: 'Brigada İcmasının üzvlərinin profil məlumatları və əlaqə vasitələri.',
+    url: '/members',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Brigada Portal Üzvlər',
+      },
+    ],
+  },
+  twitter: {
+    title: 'Üzvlər - Brigada Portal',
+    description: 'Brigada İcmasının üzvlərinin profil məlumatları.',
+  },
+  alternates: {
+    canonical: '/members',
+  },
+};
 
 interface SearchParams {
   search?: string;

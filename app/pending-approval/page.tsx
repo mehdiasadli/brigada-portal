@@ -1,6 +1,29 @@
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import LogoutButton from '@/components/LogoutButton';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Hesab İcmalı Gözlənilir',
+  description: 'Hesabınız icmal olunur. Administrasiya tərəfindən təsdiq gözlənilir.',
+  openGraph: {
+    title: 'Hesab İcmalı - Brigada Portal',
+    description: 'Hesabınız icmal olunur və admin təsdiqi gözlənilir.',
+    url: '/pending-approval',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Brigada Portal Hesab İcmalı',
+      },
+    ],
+  },
+  robots: {
+    index: false, // Don't index pending approval page
+    follow: false,
+  },
+};
 
 export default async function PendingApprovalPage() {
   const session = await auth();

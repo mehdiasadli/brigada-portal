@@ -2,6 +2,42 @@ import Link from 'next/link';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import RecentUpdates from '@/components/RecentUpdates';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Ana Səhifə',
+  description:
+    'Brigada Portal ana səhifəsi. Ən son sənədlər, üzv məlumatları və icma xəbərlərini izləyin. Rəsmi icma portalına xoş gəlmisiniz.',
+  keywords: [
+    'Brigada Portal ana səhifə',
+    'son yeniliklər',
+    'icma xəbərləri',
+    'rəsmi sənədlər',
+    'üzv məlumatları',
+    'dashboard',
+    'portal əsas səhifə',
+  ],
+  openGraph: {
+    title: 'Ana Səhifə - Brigada Portal',
+    description: 'Brigada İcmasının rəsmi portalı. Ən son sənədlər, üzv məlumatları və icma xəbərləri.',
+    url: '/',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Brigada Portal Ana Səhifə',
+      },
+    ],
+  },
+  twitter: {
+    title: 'Ana Səhifə - Brigada Portal',
+    description: 'Brigada İcmasının rəsmi portalı. Ən son sənədlər və icma xəbərləri.',
+  },
+  alternates: {
+    canonical: '/',
+  },
+};
 
 const quickAccessLinks = [
   {

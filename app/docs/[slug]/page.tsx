@@ -5,12 +5,94 @@ import Link from 'next/link';
 import { ContentStatus, DocumentClassification, UserRole } from '@prisma/client';
 import DocumentActions from '@/components/DocumentActions';
 import { getDocumentCategoryDisplayName, getDocumentStatusDisplayName } from '@/lib/utils';
-// Server component - no need for React hooks
+import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{
     slug: string;
   }>;
+}
+
+// Generate dynamic metadata
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+
+  const document = await prisma.document.findUnique({
+    where: { slug: resolvedParams.slug },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!document) {
+    return {
+      title: 'Sənəd tapılmadı',
+      description: 'Axtardığınız sənəd mövcud deyil.',
+    };
+  }
+
+  const categoryDisplay = getDocumentCategoryDisplayName(document.category);
+  const description = document.description
+    ? `${document.description.substring(0, 150)}...`
+    : `${categoryDisplay} kateqoriyasında ${document.author.name} tərəfindən yaradılan rəsmi sənəd.`;
+
+  return {
+    title: document.title,
+    description,
+    keywords: [
+      document.title,
+      categoryDisplay,
+      'rəsmi sənəd',
+      'Brigada Portal',
+      'hüquqi sənəd',
+      document.author.name,
+      ...document.tags,
+    ],
+    authors: [{ name: document.author.name }],
+    creator: document.author.name,
+    publisher: 'Brigada Portal',
+
+    openGraph: {
+      title: `${document.title} - Brigada Portal`,
+      description,
+      url: `/docs/${document.slug}`,
+      type: 'article',
+      publishedTime: document.publishedAt?.toISOString(),
+      modifiedTime: document.updatedAt.toISOString(),
+      authors: [document.author.name],
+      section: categoryDisplay,
+      tags: document.tags,
+      images: [
+        {
+          url: '/og.png',
+          width: 1200,
+          height: 630,
+          alt: `${document.title} - Brigada Portal`,
+        },
+      ],
+    },
+
+    twitter: {
+      title: `${document.title} - Brigada Portal`,
+      description,
+      creator: '@brigada_portal',
+    },
+
+    alternates: {
+      canonical: `/docs/${document.slug}`,
+    },
+
+    other: {
+      'article:author': document.author.name,
+      'article:section': categoryDisplay,
+      'article:published_time': document.publishedAt?.toISOString() || '',
+      'article:modified_time': document.updatedAt.toISOString(),
+    },
+  };
 }
 
 const formatDate = (date: Date | null) => {

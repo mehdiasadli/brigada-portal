@@ -6,6 +6,34 @@ import UserRoleManager from '@/components/UserRoleManager';
 import UserDeleteManager from '@/components/UserDeleteManager';
 import Link from 'next/link';
 import { getMemberProfileUrl } from '@/lib/member-utils';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'İstifadəçi İdarəsi',
+  description: 'Brigada Portal istifadəçilərinin idarə edilməsi. İstifadəçi rolları və icazələrinin tənzimlənməsi.',
+  keywords: ['istifadəçi idarəsi', 'admin panel', 'user management', 'rol təyini', 'icazələr', 'administrasiya'],
+  openGraph: {
+    title: 'İstifadəçi İdarəsi - Brigada Portal',
+    description: 'Admin paneli - istifadəçi idarəsi və rol təyini.',
+    url: '/admin/users',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'Brigada Portal Admin Panel',
+      },
+    ],
+  },
+  twitter: {
+    title: 'İstifadəçi İdarəsi - Brigada Portal',
+    description: 'Admin paneli - istifadəçi idarəsi.',
+  },
+  robots: {
+    index: false, // Don't index admin pages
+    follow: false,
+  },
+};
 
 interface SearchParams {
   search?: string;
