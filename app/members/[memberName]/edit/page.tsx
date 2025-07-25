@@ -66,7 +66,7 @@ export default async function EditMemberPage({ params }: PageProps) {
   });
 
   // Find the member whose name generates the same slug as the URL parameter
-  const member = members.find((m) => generateSlug(m.name) === resolvedParams.memberName);
+  const member = members.find((m) => generateSlug(m.name) === generateSlug(resolvedParams.memberName));
 
   if (!member) {
     notFound();
