@@ -31,15 +31,21 @@ interface FormData {
   userId: string; // Add userId field
 }
 
-export default function CreateMemberForm() {
+interface CreateMemberFormProps {
+  userId?: string;
+  name?: string;
+  email?: string;
+}
+
+export default function CreateMemberForm({ userId, name, email }: CreateMemberFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
+    name: name ?? '',
+    email: email ?? '',
     dateOfBirth: '',
     placeOfBirth: '',
     bio: '',
@@ -52,7 +58,7 @@ export default function CreateMemberForm() {
     facebook: '',
     x: '',
     linkedin: '',
-    userId: '', // Initialize userId
+    userId: userId ?? '', // Initialize userId
   });
 
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);

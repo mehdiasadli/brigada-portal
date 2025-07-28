@@ -3,7 +3,15 @@ import { UserRole } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import CreateMemberForm from '@/components/CreateMemberForm';
 
-export default async function CreateMemberPage() {
+type CreateMemberPageProps = {
+  searchParams?: Promise<{
+    userId?: string;
+    name?: string;
+    email?: string;
+  }>;
+};
+
+export default async function CreateMemberPage({ searchParams }: CreateMemberPageProps) {
   const session = await auth();
 
   // Check authentication
@@ -16,6 +24,8 @@ export default async function CreateMemberPage() {
     redirect('/members');
   }
 
+  const { userId, name, email } = (await searchParams) ?? {};
+
   return (
     <div className='min-h-screen bg-white'>
       <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
@@ -26,7 +36,7 @@ export default async function CreateMemberPage() {
         </div>
 
         {/* Form */}
-        <CreateMemberForm />
+        <CreateMemberForm userId={userId} name={name} email={email} />
       </div>
     </div>
   );

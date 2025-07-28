@@ -300,7 +300,15 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                             </Link>
                           </div>
                         ) : (
-                          <span className='text-gray-400'>Üzv profili yoxdur</span>
+                          <div className='flex flex-col space-y-1'>
+                            <span className='text-gray-400'>Üzv profili yoxdur</span>
+                            <Link
+                              href={`/members/create?userId=${user.id}&name=${user.name}&email=${user.email}`}
+                              className='text-blue-600 hover:text-blue-800 text-xs underline'
+                            >
+                              Profili yarat
+                            </Link>
+                          </div>
                         )}
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-serif'>
